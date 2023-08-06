@@ -12,7 +12,7 @@ func (o object) Str(key string) string {
 }
 
 func (o object) Int(key string) int {
-	return o[key].(int)
+	return int(o[key].(float64))
 }
 
 func (o object) Float(key string) float64 {
@@ -24,77 +24,91 @@ func (o object) Bool(key string) bool {
 }
 
 func (o object) Obj(key string) Object {
-	return o[key].(object)
+	return object(o[key].(map[string]interface{}))
+}
+
+func (o object) getArr(key string) []interface{} {
+	val, ok := o[key]
+	if !ok {
+		return []interface{}{}
+	}
+
+	arr, ok := val.([]interface{})
+	if !ok {
+		return []interface{}{}
+	}
+
+	return arr
 }
 
 func (o object) StrArr(key string) []string {
-	val, ok := o[key]
-	if !ok {
+	arr := o.getArr(key)
+	if arr == nil {
 		return []string{}
 	}
 
-	arr, ok := val.([]string)
-	if !ok {
-		return []string{}
+	respArr := make([]string, len(arr))
+	for i := range arr {
+		respArr[i] = arr[i].(string)
 	}
 
-	return arr
+	return respArr
 }
 
 func (o object) IntArr(key string) []int {
-	val, ok := o[key]
-	if !ok {
+	arr := o.getArr(key)
+	if arr == nil {
 		return []int{}
 	}
 
-	arr, ok := val.([]int)
-	if !ok {
-		return []int{}
+	respArr := make([]int, len(arr))
+	for i := range arr {
+		respArr[i] = int(arr[i].(float64))
 	}
 
-	return arr
+	return respArr
 }
 
 func (o object) FloatArr(key string) []float64 {
-	val, ok := o[key]
-	if !ok {
+	arr := o.getArr(key)
+	if arr == nil {
 		return []float64{}
 	}
 
-	arr, ok := val.([]float64)
-	if !ok {
-		return []float64{}
+	respArr := make([]float64, len(arr))
+	for i := range arr {
+		respArr[i] = arr[i].(float64)
 	}
 
-	return arr
+	return respArr
 }
 
 func (o object) BoolArr(key string) []bool {
-	val, ok := o[key]
-	if !ok {
+	arr := o.getArr(key)
+	if arr == nil {
 		return []bool{}
 	}
 
-	arr, ok := val.([]bool)
-	if !ok {
-		return []bool{}
+	respArr := make([]bool, len(arr))
+	for i := range arr {
+		respArr[i] = arr[i].(bool)
 	}
 
-	return arr
+	return respArr
 }
 
 func (o object) ObjArr(key string) []Object {
-	val, ok := o[key]
-	if !ok {
+	arr := o.getArr(key)
+	if arr == nil {
 		return []Object{}
 	}
 
-	arr, ok := val.([]Object)
-	if !ok {
-		return []Object{}
+	respArr := make([]Object, len(arr))
+	for i := range arr {
+		respArr[i] = object(arr[i].(map[string]interface{}))
 	}
 
-	return arr
+	return respArr
 }
 
 func (o object) OptStr(key string) *string {
