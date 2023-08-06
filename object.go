@@ -1,25 +1,103 @@
 package jsonq
 
-import "encoding/json"
-
 type object map[string]interface{}
-
-func ParseObject(b []byte) (Object, error) {
-	var obj object
-	err := json.Unmarshal(b, &obj)
-	if err != nil {
-		return nil, err
-	}
-
-	return obj, nil
-}
 
 func (o object) Has(key string) bool {
 	_, ok := o[key]
 	return ok
 }
 
-func (o object) Str(key string) *string {
+func (o object) Str(key string) string {
+	return o[key].(string)
+}
+
+func (o object) Int(key string) int {
+	return o[key].(int)
+}
+
+func (o object) Float(key string) float64 {
+	return o[key].(float64)
+}
+
+func (o object) Bool(key string) bool {
+	return o[key].(bool)
+}
+
+func (o object) Obj(key string) Object {
+	return o[key].(object)
+}
+
+func (o object) StrArr(key string) []string {
+	val, ok := o[key]
+	if !ok {
+		return []string{}
+	}
+
+	arr, ok := val.([]string)
+	if !ok {
+		return []string{}
+	}
+
+	return arr
+}
+
+func (o object) IntArr(key string) []int {
+	val, ok := o[key]
+	if !ok {
+		return []int{}
+	}
+
+	arr, ok := val.([]int)
+	if !ok {
+		return []int{}
+	}
+
+	return arr
+}
+
+func (o object) FloatArr(key string) []float64 {
+	val, ok := o[key]
+	if !ok {
+		return []float64{}
+	}
+
+	arr, ok := val.([]float64)
+	if !ok {
+		return []float64{}
+	}
+
+	return arr
+}
+
+func (o object) BoolArr(key string) []bool {
+	val, ok := o[key]
+	if !ok {
+		return []bool{}
+	}
+
+	arr, ok := val.([]bool)
+	if !ok {
+		return []bool{}
+	}
+
+	return arr
+}
+
+func (o object) ObjArr(key string) []Object {
+	val, ok := o[key]
+	if !ok {
+		return []Object{}
+	}
+
+	arr, ok := val.([]Object)
+	if !ok {
+		return []Object{}
+	}
+
+	return arr
+}
+
+func (o object) OptStr(key string) *string {
 	val, ok := o[key]
 	if !ok {
 		return nil
@@ -33,13 +111,13 @@ func (o object) Str(key string) *string {
 	return &str
 }
 
-func (o object) Int(key string) *int64 {
+func (o object) OptInt(key string) *int {
 	val, ok := o[key]
 	if !ok {
 		return nil
 	}
 
-	n, ok := val.(int64)
+	n, ok := val.(int)
 	if !ok {
 		return nil
 	}
@@ -47,7 +125,7 @@ func (o object) Int(key string) *int64 {
 	return &n
 }
 
-func (o object) Float(key string) *float64 {
+func (o object) OptFloat(key string) *float64 {
 	val, ok := o[key]
 	if !ok {
 		return nil
@@ -61,7 +139,7 @@ func (o object) Float(key string) *float64 {
 	return &f
 }
 
-func (o object) Bool(key string) *bool {
+func (o object) OptBool(key string) *bool {
 	val, ok := o[key]
 	if !ok {
 		return nil
@@ -75,7 +153,7 @@ func (o object) Bool(key string) *bool {
 	return &b
 }
 
-func (o object) Obj(key string) Object {
+func (o object) OptObj(key string) Object {
 	val, ok := o[key]
 	if !ok {
 		return nil
@@ -87,74 +165,4 @@ func (o object) Obj(key string) Object {
 	}
 
 	return obj
-}
-
-func (o object) StrArr(key string) []string {
-	val, ok := o[key]
-	if !ok {
-		return nil
-	}
-
-	arr, ok := val.([]string)
-	if !ok {
-		return nil
-	}
-
-	return arr
-}
-
-func (o object) IntArr(key string) []int64 {
-	val, ok := o[key]
-	if !ok {
-		return nil
-	}
-
-	arr, ok := val.([]int64)
-	if !ok {
-		return nil
-	}
-
-	return arr
-}
-
-func (o object) FloatArr(key string) []float64 {
-	val, ok := o[key]
-	if !ok {
-		return nil
-	}
-
-	arr, ok := val.([]float64)
-	if !ok {
-		return nil
-	}
-
-	return arr
-}
-
-func (o object) BoolArr(key string) []bool {
-	val, ok := o[key]
-	if !ok {
-		return nil
-	}
-
-	arr, ok := val.([]bool)
-	if !ok {
-		return nil
-	}
-
-	return arr
-}
-
-func (o object) ObjArr(key string) []Object {
-	val, ok := o[key]
-	if !ok {
-		return nil
-	}
-
-	arr, ok := val.([]Object)
-	if !ok {
-		return nil
-	}
-
-	return arr
 }
