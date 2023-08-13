@@ -48,17 +48,17 @@ func TestQuery(t *testing.T) {
 	q, err := ParseObject([]byte(TestData))
 	tErr(t, err)
 
-	ival := q.Int("foo")
+	ival := q.Val("foo").Int()
 	if ival != 1 {
 		t.Errorf("Expecting 1, got %v\n", ival)
 	}
 
-	ival = q.Int("bar")
+	ival = q.Val("bar").Int()
 	if ival != 2 {
 		t.Errorf("Expecting 2, got %v\n", ival)
 	}
 
-	ival = q.Obj("subobj").Int("foo")
+	ival = q.Obj("subobj").Val("foo").Int()
 	if ival != 1 {
 		t.Errorf("Expecting 1, got %v\n", ival)
 	}
@@ -69,9 +69,7 @@ func TestQuery(t *testing.T) {
 	//	t.Errorf("Expecting 42, got %v\n", ival)
 	//}
 
-	x := q.Obj("subobj").(object)["subarray"]
-	t.Log(x.([]interface{}))
-	arr := q.Obj("subobj").IntArr("subarray")
+	arr := q.Obj("subobj").Arr("subarray").Int()
 	for i := 0; i < 3; i++ {
 		ival := arr[i]
 		if ival != i+1 {
@@ -79,7 +77,7 @@ func TestQuery(t *testing.T) {
 		}
 	}
 
-	fval := q.Float("baz")
+	fval := q.Val("baz").Float()
 	if fval != 123.1 {
 		t.Errorf("Expecting 123.1, got %f\n", fval)
 	}
@@ -90,37 +88,37 @@ func TestQuery(t *testing.T) {
 	//	t.Errorf("Expecting 42.1, got %v\n", fval)
 	//}
 
-	sval := q.Str("test")
+	sval := q.Val("test").Str()
 	if sval != "Hello, world!" {
 		t.Errorf("Expecting \"Hello, World!\", got \"%v\"\n", sval)
 	}
 
-	sval = q.Obj("subobj").Obj("subsubobj").StrArr("array")[0]
+	sval = q.Obj("subobj").Obj("subsubobj").Arr("array").Str()[0]
 	if sval != "hello" {
 		t.Errorf("Expecting \"hello\", got \"%s\"\n", sval)
 	}
 
-	bval := q.Bool("bool")
+	bval := q.Val("bool").Bool()
 	if !bval {
 		t.Errorf("Expecting true, got %v\n", bval)
 	}
 
 	obj := q.Obj("subobj").Obj("subsubobj")
 
-	sval = obj.StrArr("array")[1]
+	sval = obj.Arr("array").Str()[1]
 	if sval != "world" {
 		t.Errorf("Expecting \"world\", got \"%s\"\n", sval)
 	}
 
-	aobj := q.Obj("subobj").FloatArr("subarray")
+	aobj := q.Obj("subobj").Arr("subarray").Float()
 
 	if aobj[0] != 1 {
 		t.Errorf("Expecting 1, got %v\n", aobj[0])
 	}
 
-	iobj := q.OptStr("numstring")
-	if iobj == nil {
-		t.Errorf("Expecting type string got: %v", iobj)
+	iobj := q.Val("numstring")
+	if _, ok := iobj.OptStr(); !ok {
+		t.Errorf("Expecting type string got: %v", iobj.val)
 	}
 
 	/*
@@ -128,44 +126,48 @@ func TestQuery(t *testing.T) {
 	*/
 
 	//test array of strings
-	astrings := q.Obj("collections").StrArr("strings")
+	astrings := q.Obj("collections").Arr("strings").Str()
 
 	if astrings[0] != "hello" {
 		t.Errorf("Expecting hello, got %v\n", astrings[0])
 	}
 
 	//test array of ints
-	aints := q.Obj("collections").IntArr("numbers")
+	aints := q.Obj("collections").Arr("numbers").Int()
 
 	if aints[0] != 1 {
 		t.Errorf("Expecting 1, got %v\n", aints[0])
 	}
 
 	//test array of floats
-	afloats := q.Obj("collections").FloatArr("numbers")
+	afloats := q.Obj("collections").Arr("numbers").Float()
 
 	if afloats[0] != 1.0 {
 		t.Errorf("Expecting 1.0, got %v\n", afloats[0])
 	}
 
 	//test array of bools
-	abools := q.Obj("collections").BoolArr("bools")
+	abools := q.Obj("collections").Arr("bools").Bool()
 
 	if abools[0] {
 		t.Errorf("Expecting true, got %v\n", abools[0])
 	}
 
-	////test array of arrays
-	//aa := q.Obj("collections").ArrArr("arrays")
-	//
-	//if aa[0][0].(float64) != 1 {
-	//	t.Errorf("Expecting 1, got %v\n", aa[0][0])
-	//}
+	//test array of arrays
+	aa := q.Obj("collections").Arr("arrays").Arr()
+
+	if aa[0].Float()[0] != 1 {
+		t.Errorf("Expecting 1, got %v\n", aa[0][0])
+	}
+
+	if aa[0][0].(float64) != 1 {
+		t.Errorf("Expecting 1, got %v\n", aa[0][0])
+	}
 
 	//test array of objs
-	aobjs := q.Obj("collections").ObjArr("objects")
+	aobjs := q.Obj("collections").Arr("objects").Obj()
 
-	if aobjs[0].Float("obj1") != 1 {
+	if aobjs[0].Val("obj1").Float() != 1 {
 		t.Errorf("Expecting 1, got %v\n", aobjs[0])
 	}
 }
