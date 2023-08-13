@@ -111,72 +111,27 @@ func (o object) ObjArr(key string) []Object {
 	return respArr
 }
 
-func (o object) OptStr(key string) *string {
-	val, ok := o[key]
-	if !ok {
-		return nil
-	}
-
-	str, ok := val.(string)
-	if !ok {
-		return nil
-	}
-
-	return &str
+func (o object) OptStr(key string) (string, bool) {
+	val, ok := o[key].(string)
+	return val, ok
 }
 
-func (o object) OptInt(key string) *int {
-	val, ok := o[key]
-	if !ok {
-		return nil
-	}
-
-	n, ok := val.(int)
-	if !ok {
-		return nil
-	}
-
-	return &n
+func (o object) OptInt(key string) (int, bool) {
+	val, ok := o[key].(float64)
+	return int(val), ok
 }
 
-func (o object) OptFloat(key string) *float64 {
-	val, ok := o[key]
-	if !ok {
-		return nil
-	}
-
-	f, ok := val.(float64)
-	if !ok {
-		return nil
-	}
-
-	return &f
+func (o object) OptFloat(key string) (float64, bool) {
+	val, ok := o[key].(float64)
+	return val, ok
 }
 
-func (o object) OptBool(key string) *bool {
-	val, ok := o[key]
-	if !ok {
-		return nil
-	}
-
-	b, ok := val.(bool)
-	if !ok {
-		return nil
-	}
-
-	return &b
+func (o object) OptBool(key string) (bool, bool) {
+	val, ok := o[key].(bool)
+	return val, ok
 }
 
-func (o object) OptObj(key string) Object {
-	val, ok := o[key]
-	if !ok {
-		return nil
-	}
-
-	obj, ok := val.(object)
-	if !ok {
-		return nil
-	}
-
-	return obj
+func (o object) OptObj(key string) (Object, bool) {
+	val, ok := o[key].(map[string]interface{})
+	return object(val), ok
 }

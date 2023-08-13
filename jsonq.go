@@ -14,11 +14,11 @@ type Object interface {
 	FloatArr(key string) []float64
 	BoolArr(key string) []bool
 	ObjArr(key string) []Object
-	OptStr(key string) *string
-	OptInt(key string) *int
-	OptFloat(key string) *float64
-	OptBool(key string) *bool
-	OptObj(key string) Object
+	OptStr(key string) (string, bool)
+	OptInt(key string) (int, bool)
+	OptFloat(key string) (float64, bool)
+	OptBool(key string) (bool, bool)
+	OptObj(key string) (Object, bool)
 }
 
 func ParseObject(b []byte) (Object, error) {
