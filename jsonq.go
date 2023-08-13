@@ -1,6 +1,6 @@
 package jsonq
 
-import "encoding/json"
+import "github.com/goccy/go-json"
 
 func ParseObject(b []byte) (Object, error) {
 	var obj Object
