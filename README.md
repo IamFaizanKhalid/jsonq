@@ -15,6 +15,8 @@ go get -u github.com/IamFaizanKhalid/jsonq
 
 ## Usage Example
 
+See [reference docs](https://pkg.go.dev/github.com/IamFaizanKhalid/jsonq) for more details.
+
 ```go
 package main
 
@@ -47,21 +49,25 @@ func main() {
 		}
 	}`)
 
+	// parsing the JSON object
 	resp, err := jsonq.ParseObject(apiResponse)
 	if err != nil {
 		panic(err)
 	}
 
+	// getting values from the object
 	code := resp.Val("code").Int()
 	status := resp.Val("status").Str()
 
 	fmt.Println(code, status)
 
+	// checking if the object contains the sub-object
 	if !resp.Has("data") {
 		return
 	}
 	data := resp.Obj("data")
 
+	// getting a sub-object which is optional
 	userInfo, ok := data.OptObj("user")
 	if ok {
 		fmt.Println("-- User Info --")
@@ -73,6 +79,7 @@ func main() {
 
 	fmt.Println("-- Posts --")
 
+	// getting array of objects
 	posts := data.Arr("posts").Obj()
 
 	for _, post := range posts {
