@@ -21,3 +21,10 @@ func ParseArray(b []byte) (Array, error) {
 
 	return arr, nil
 }
+
+func ParseValue(b []byte) (Value, error) {
+	var val any
+	err := json.Unmarshal(b, &val)
+
+	return Value{val}, err
+}
